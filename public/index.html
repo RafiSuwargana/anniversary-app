@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anniversary Scrollytelling</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <!-- Lock Screen - Separate from loading -->
+    <div id="lock-screen" class="lock-screen-page">
+        <div class="lock-container">
+            <div class="lock-body locked">
+                <div class="lock-shackle"></div>
+                <div class="lock-face">
+                    <div class="combination-dials">
+                        <div class="dial" data-dial="0" onclick="rotateDial(0)">
+                            <div class="dial-numbers">
+                                <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
+                                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                            </div>
+                            <div class="dial-indicator"></div>
+                        </div>
+                        <div class="dial" data-dial="1" onclick="rotateDial(1)">
+                            <div class="dial-numbers">
+                                <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
+                                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                            </div>
+                            <div class="dial-indicator"></div>
+                        </div>
+                        <div class="dial" data-dial="2" onclick="rotateDial(2)">
+                            <div class="dial-numbers">
+                                <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
+                                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                            </div>
+                            <div class="dial-indicator"></div>
+                        </div>
+                        <div class="dial" data-dial="3" onclick="rotateDial(3)">
+                            <div class="dial-numbers">
+                                <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
+                                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                            </div>
+                            <div class="dial-indicator"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="unlock-message">
+                <p>Click each dial to set the combination</p>
+                <div class="hint">💡 Hint: When did we first meet? (DDMM)</div>
+                <div class="current-code">
+                    <span id="code-display">0000</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content - Hidden until unlocked -->
+    <div id="main-content" class="main-content hidden">
+        <!-- Loading Screen -->
+        <div id="loading" class="loading-screen hidden">
+            <div class="loading-spinner"></div>
+            <p>Loading our story...</p>
+        </div>
+
+    <header class="hero-section" id="hero">
+        <div class="hero-content">
+            <h1 id="main-title">Happy Anniversary!</h1>
+            
+            <!-- Romantic Quote -->
+            <div class="romantic-quote">
+                <p>"Two years together and counting"</p>
+            </div>
+            
+            <!-- Anniversary Counter -->
+            <div class="anniversary-counter">
+                <div class="counter-display">
+                    <div class="counter-item">
+                        <span class="counter-number" id="years">0</span>
+                        <span class="counter-label">Years</span>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-number" id="months">0</span>
+                        <span class="counter-label">Months</span>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-number" id="days">0</span>
+                        <span class="counter-label">Days</span>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-number" id="hours">0</span>
+                        <span class="counter-label">Hours</span>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-number" id="minutes">0</span>
+                        <span class="counter-label">Minutes</span>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-number" id="seconds">0</span>
+                        <span class="counter-label">Seconds</span>
+                    </div>
+                </div>
+                <div class="anniversary-date">Since February 3, 2024</div>
+            </div>
+            
+            <div class="scroll-indicator">
+                <span>Scroll to explore our story</span>
+                <div class="scroll-arrow">↓</div>
+            </div>
+        </div>
+        <div class="hero-background"></div>
+        <div class="floating-particles"></div>
+        <div class="hover-images-container"></div>
+        </header>
+
+        <main class="story-container">
+            <div id="story-sections" class="sections-wrapper">
+                <!-- Konten akan di-load dinamis dari JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- Navigation dots -->
+    <nav class="section-navigation" id="nav-dots">
+        <!-- Navigation dots akan di-generate oleh JavaScript -->
+    </nav>
+
+    <script src="js/scroll-animations.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
