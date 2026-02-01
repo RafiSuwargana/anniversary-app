@@ -11,47 +11,18 @@
     <!-- Lock Screen - Separate from loading -->
     <div id="lock-screen" class="lock-screen-page">
         <div class="lock-container">
-            <div class="lock-body locked">
-                <div class="lock-shackle"></div>
-                <div class="lock-face">
-                    <div class="combination-dials">
-                        <div class="dial" data-dial="0" onclick="rotateDial(0)">
-                            <div class="dial-numbers">
-                                <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
-                                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
-                            </div>
-                            <div class="dial-indicator"></div>
-                        </div>
-                        <div class="dial" data-dial="1" onclick="rotateDial(1)">
-                            <div class="dial-numbers">
-                                <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
-                                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
-                            </div>
-                            <div class="dial-indicator"></div>
-                        </div>
-                        <div class="dial" data-dial="2" onclick="rotateDial(2)">
-                            <div class="dial-numbers">
-                                <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
-                                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
-                            </div>
-                            <div class="dial-indicator"></div>
-                        </div>
-                        <div class="dial" data-dial="3" onclick="rotateDial(3)">
-                            <div class="dial-numbers">
-                                <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
-                                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
-                            </div>
-                            <div class="dial-indicator"></div>
-                        </div>
-                    </div>
-                </div>
+            <div class="pin-lock-header">
+                <h2>Enter PIN</h2>
+                <p class="pin-subtitle">When did we first meet?</p>
             </div>
-            <div class="unlock-message">
-                <p>Click each dial to set the combination</p>
-                <div class="hint">💡 Hint: When did we first meet? (DDMM)</div>
-                <div class="current-code">
-                    <span id="code-display">0000</span>
-                </div>
+            <div class="pin-input-container">
+                <input type="text" class="pin-box" id="pin-1" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                <input type="text" class="pin-box" id="pin-2" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                <input type="text" class="pin-box" id="pin-3" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                <input type="text" class="pin-box" id="pin-4" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+            </div>
+            <div class="pin-message" id="pin-message">
+                <p class="hint">💡 Hint: DDMM format</p>
             </div>
         </div>
     </div>
@@ -104,6 +75,15 @@
                 <div class="anniversary-date">Since February 3, 2024</div>
             </div>
             
+            <!-- Watch Video Button -->
+            <button class="watch-video-btn" id="watch-video-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <polygon points="10,8 10,16 16,12" fill="currentColor"/>
+                </svg>
+                <span>A Special Message</span>
+            </button>
+            
             <div class="scroll-indicator">
                 <span>Scroll to explore our story</span>
                 <div class="scroll-arrow">↓</div>
@@ -130,6 +110,25 @@
     <nav class="section-navigation" id="nav-dots">
         <!-- Navigation dots akan di-generate oleh JavaScript -->
     </nav>
+
+    <!-- Video Modal -->
+    <div class="video-modal" id="video-modal">
+        <div class="video-modal-overlay" id="video-modal-overlay"></div>
+        <div class="video-modal-content">
+            <button class="video-modal-close" id="video-modal-close">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="video-wrapper">
+                <video id="anniversary-video" class="anniversary-video" controls>
+                    <source src="videos/anniversary-video.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
 
     <script src="js/scroll-animations.js"></script>
     <script src="js/main.js"></script>

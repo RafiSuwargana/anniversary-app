@@ -240,20 +240,9 @@ class ScrollAnimations {
             this.addParticlesToContainer(heroParticlesContainer, 25, 8);
         }
         
-        // Add particles to story sections (will be called again after sections are rendered)
-        this.addParticlesToStorySections();
-    }
-    
-    // Method to add particles to story sections (can be called from main.js)
-    addParticlesToStorySections() {
-        // Remove existing section particles first
-        document.querySelectorAll('.section-floating-particles').forEach(el => el.remove());
-        
         // Create particles for all story sections
         const storySections = document.querySelectorAll('.story-section');
-        console.log('Found story sections for particles:', storySections.length);
-        
-        storySections.forEach((section, index) => {
+        storySections.forEach(section => {
             // Create particles container for each section
             const particlesDiv = document.createElement('div');
             particlesDiv.className = 'section-floating-particles';
@@ -278,7 +267,6 @@ class ScrollAnimations {
         for (let i = 0; i < smallCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
-            const startY = Math.random() * 100; // Random starting position
             particle.style.cssText = `
                 position: absolute;
                 width: ${2 + Math.random() * 4}px;
@@ -286,11 +274,9 @@ class ScrollAnimations {
                 background: radial-gradient(circle, rgba(255,255,255,${0.4 + Math.random() * 0.6}), transparent);
                 border-radius: 50%;
                 left: ${Math.random() * 100}%;
-                top: ${startY}%;
                 animation: float-particle ${6 + Math.random() * 6}s linear infinite;
                 animation-delay: ${Math.random() * 12}s;
                 pointer-events: none;
-                z-index: 5;
             `;
             
             container.appendChild(particle);
@@ -300,7 +286,6 @@ class ScrollAnimations {
         for (let i = 0; i < bigCount; i++) {
             const bigParticle = document.createElement('div');
             bigParticle.className = 'particle-big';
-            const startY = Math.random() * 100; // Random starting position
             bigParticle.style.cssText = `
                 position: absolute;
                 width: ${4 + Math.random() * 3}px;
@@ -308,12 +293,10 @@ class ScrollAnimations {
                 background: radial-gradient(circle, rgba(255,255,255,${0.2 + Math.random() * 0.4}), transparent);
                 border-radius: 50%;
                 left: ${Math.random() * 100}%;
-                top: ${startY}%;
                 animation: float-particle ${10 + Math.random() * 8}s linear infinite;
                 animation-delay: ${Math.random() * 15}s;
                 pointer-events: none;
                 box-shadow: 0 0 6px rgba(255,255,255,0.3);
-                z-index: 5;
             `;
             
             container.appendChild(bigParticle);

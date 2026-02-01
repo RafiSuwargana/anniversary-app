@@ -110,29 +110,112 @@ class AnniversaryApp {
     }
     
     initializeLock() {
-        // Initialize lock system
-        window.currentCombination = [0, 0, 0, 0];
-        window.correctCombination = [2, 1, 1, 0]; // Password 2110
-        window.updateCodeDisplay();
+        // Initialize PIN lock system
+        window.correctPIN = '2110'; // Password 2110 (DDMM format)
         
-        // Make sure lock is in LOCKED state
-        const lockBody = document.querySelector('.lock-body');
-        if (lockBody) {
-            lockBody.classList.remove('unlocked');
-            lockBody.classList.add('locked');
-        }
+        const pinBoxes = document.querySelectorAll('.pin-box');
+        const pinMessage = document.getElementById('pin-message');
         
-        // Reset all dial positions to 0
-        const dials = document.querySelectorAll('.dial');
-        dials.forEach((dial, index) => {
-            const dialNumbers = dial.querySelector('.dial-numbers');
-            if (dialNumbers) {
-                // Set initial position to show first number (0)
-                dialNumbers.style.transform = 'translateY(0px)';
+        pinBoxes.forEach((box, index) => {
+            // Auto-focus first box
+            if (index === 0) {
+                box.focus();
             }
+            
+            // Input event
+            box.addEventListener('input', (e) => {
+                const value = e.target.value;
+                
+                // Only allow numbers
+                if (!/^[0-9]$/.test(value)) {
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Add filled class
+                e.target.classList.add('filled');
+                
+                // Move to next box
+                if (value && index < 3) {
+                    pinBoxes[index + 1].focus();
+                }
+                
+                // Check if all boxes filled
+                if (index === 3 && value) {
+                    this.checkPIN();
+                }
+            });
+            
+            // Backspace handling
+            box.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    pinBoxes[index - 1].focus();
+                    pinBoxes[index - 1].value = '';
+                    pinBoxes[index - 1].classList.remove('filled');
+                }
+            });
+            
+            // Paste handling
+            box.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pasteData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 4);
+                
+                pasteData.split('').forEach((digit, i) => {
+                    if (pinBoxes[i]) {
+                        pinBoxes[i].value = digit;
+                        pinBoxes[i].classList.add('filled');
+                    }
+                });
+                
+                if (pasteData.length === 4) {
+                    this.checkPIN();
+                }
+            });
         });
         
-        console.log('Lock initialized:', window.currentCombination, 'Target:', window.correctCombination);
+        console.log('PIN lock initialized');
+    }
+    
+    checkPIN() {
+        const pinBoxes = document.querySelectorAll('.pin-box');
+        const pinMessage = document.getElementById('pin-message');
+        const enteredPIN = Array.from(pinBoxes).map(box => box.value).join('');
+        
+        console.log('Checking PIN:', enteredPIN);
+        
+        if (enteredPIN === window.correctPIN) {
+            // Success
+            pinBoxes.forEach(box => {
+                box.classList.remove('error');
+                box.classList.add('success');
+                box.disabled = true;
+            });
+            
+            pinMessage.innerHTML = '<p class="success-text">✓ Perfect! You still remember</p>';
+            
+            // Show main content after delay
+            setTimeout(() => {
+                this.showMainContent();
+            }, 1500);
+            
+        } else {
+            // Error
+            pinBoxes.forEach(box => {
+                box.classList.add('error');
+                setTimeout(() => {
+                    box.classList.remove('error');
+                    box.value = '';
+                    box.classList.remove('filled');
+                }, 500);
+            });
+            
+            pinMessage.innerHTML = '<p class="error-text">✗ Incorrect PIN. Try again!</p><p class="hint">💡 Hint: DDMM format</p>';
+            
+            // Reset focus
+            setTimeout(() => {
+                pinBoxes[0].focus();
+            }, 500);
+        }
     }
     
     hideLoading() {
@@ -1740,31 +1823,51 @@ function playVideo() {
 
 // Auto-show video overlay when video ends or pauses
 function setupVideoEvents() {
-    const videos = document.querySelectorAll('.anniversary-video');
-    videos.forEach(video => {
-        video.addEventListener('ended', function() {
-            const overlay = this.parentElement.querySelector('.video-overlay');
-            if (overlay) {
-                overlay.classList.remove('hidden');
+    // Setup video modal
+    const watchVideoBtn = document.getElementById('watch-video-btn');
+    const videoModal = document.getElementById('video-modal');
+    const videoModalOverlay = document.getElementById('video-modal-overlay');
+    const videoModalClose = document.getElementById('video-modal-close');
+    const video = document.getElementById('anniversary-video');
+    
+    // Open modal
+    if (watchVideoBtn && videoModal) {
+        watchVideoBtn.addEventListener('click', function() {
+            videoModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            if (video) {
+                video.play();
             }
         });
-        
-        video.addEventListener('pause', function() {
-            if (this.currentTime < this.duration) {
-                const overlay = this.parentElement.querySelector('.video-overlay');
-                if (overlay) {
-                    overlay.classList.remove('hidden');
-                }
+    }
+    
+    // Close modal function
+    function closeVideoModal() {
+        if (videoModal) {
+            videoModal.classList.remove('active');
+            document.body.style.overflow = '';
+            if (video) {
+                video.pause();
+                video.currentTime = 0;
             }
-        });
-        
-        video.addEventListener('loadeddata', function() {
-            // Auto-show overlay when video loads
-            const overlay = this.parentElement.querySelector('.video-overlay');
-            if (overlay) {
-                overlay.classList.remove('hidden');
-            }
-        });
+        }
+    }
+    
+    // Close on overlay click
+    if (videoModalOverlay) {
+        videoModalOverlay.addEventListener('click', closeVideoModal);
+    }
+    
+    // Close on button click
+    if (videoModalClose) {
+        videoModalClose.addEventListener('click', closeVideoModal);
+    }
+    
+    // Close on ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && videoModal && videoModal.classList.contains('active')) {
+            closeVideoModal();
+        }
     });
 }
 
