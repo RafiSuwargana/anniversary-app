@@ -181,15 +181,38 @@ class ScrollAnimations {
     // Update Anniversary Counter
     updateAnniversaryCounter() {
         const now = new Date();
-        const timeDiff = now.getTime() - this.anniversaryDate.getTime();
+        const start = this.anniversaryDate;
         
-        // Calculate time components
-        const years = Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 365.25));
-        const months = Math.floor((timeDiff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
-        const days = Math.floor((timeDiff % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+        // Calculate years
+        let years = now.getFullYear() - start.getFullYear();
+        
+        // Calculate months
+        let months = now.getMonth() - start.getMonth();
+        
+        // Calculate days
+        let days = now.getDate() - start.getDate();
+        
+        // Adjust if days is negative
+        if (days < 0) {
+            months--;
+            // Get days in previous month
+            const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+            days += prevMonth.getDate();
+        }
+        
+        // Adjust if months is negative
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+        
+        // Calculate remaining time components
+        const tempDate = new Date(start.getFullYear() + years, start.getMonth() + months, start.getDate() + days);
+        const remainingTime = now.getTime() - tempDate.getTime();
+        
+        const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
         
         // Update DOM elements with animation
         this.animateCounterUpdate('years', years);
