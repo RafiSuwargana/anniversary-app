@@ -901,8 +901,34 @@ class AnniversaryApp {
             'foto6.png', 'foto7.png', 'foto8.png', 'foto9.png', 'foto10.png',
             'foto1.svg', 'foto2.svg', 'foto3.svg', 'foto4.svg', 'foto5.svg'
         ];
-        const loveEmojis = ['💕', '💖', '✨', '🌸', '💝', '🦋', '🌺', '💫', '🎀', '💍'];
-        let activeBubbles = []; // Track active bubble positions
+        
+        let validPhotos = []; // Only photos that successfully load
+        let photosChecked = false;
+        let activeBubbles = [];
+        let lastBubbleTime = 0;
+        const throttleDelay = 100;
+        
+        // Preload and check which photos exist
+        let loadedCount = 0;
+        photoFiles.forEach(photo => {
+            const img = new Image();
+            img.onload = () => {
+                validPhotos.push(photo);
+                loadedCount++;
+                if (loadedCount === photoFiles.length) {
+                    photosChecked = true;
+                    console.log(`Valid photos found: ${validPhotos.length}`);
+                }
+            };
+            img.onerror = () => {
+                loadedCount++;
+                if (loadedCount === photoFiles.length) {
+                    photosChecked = true;
+                    console.log(`Valid photos found: ${validPhotos.length}`);
+                }
+            };
+            img.src = `images/hover-photos/${photo}`;
+        });
         
         // Function to check if position is too close to existing bubbles
         function isTooClose(x, y, minDistance = 100) {
@@ -912,18 +938,33 @@ class AnniversaryApp {
             });
         }
         
-        document.addEventListener('mousemove', (e) => {
+        // Throttled mousemove handler
+        const handleMouseMove = (e) => {
+            // Wait until photos are checked
+            if (!photosChecked || validPhotos.length === 0) {
+                return;
+            }
+            
+            const now = Date.now();
+            
+            // Throttle: skip if not enough time has passed
+            if (now - lastBubbleTime < throttleDelay) {
+                return;
+            }
+            
+            lastBubbleTime = now;
+            
             // Check if position is too close to existing bubbles
             if (isTooClose(e.clientX, e.clientY)) {
-                return; // Skip creating bubble if too close
+                return;
             }
             
             // Create hover image
             const hoverImage = document.createElement('div');
             hoverImage.className = 'hover-image';
             
-            // Use only photos (no fallback to emoji)
-            const randomPhoto = photoFiles[Math.floor(Math.random() * photoFiles.length)];
+            // Use only valid photos
+            const randomPhoto = validPhotos[Math.floor(Math.random() * validPhotos.length)];
             const img = document.createElement('img');
             img.src = `images/hover-photos/${randomPhoto}`;
             
@@ -933,34 +974,34 @@ class AnniversaryApp {
             hoverImage.style.left = bubbleX + 'px';
             hoverImage.style.top = bubbleY + 'px';
             
+            hoverImage.appendChild(img);
+            
+            // Add to DOM immediately for instant response
+            hoverContainer.appendChild(hoverImage);
+            
             // Add to active bubbles tracking
             const bubbleData = { x: e.clientX, y: e.clientY, element: hoverImage };
             activeBubbles.push(bubbleData);
             
-            // Only show if photo loads successfully
-            img.onload = () => {
-                console.log(`Loaded photo: ${randomPhoto}`);
-                hoverContainer.appendChild(hoverImage);
-                
-                // Remove after animation and clean up tracking
-                setTimeout(() => {
-                    if (hoverImage.parentNode) {
-                        hoverImage.parentNode.removeChild(hoverImage);
-                    }
-                    // Remove from active bubbles tracking
-                    activeBubbles = activeBubbles.filter(bubble => bubble.element !== hoverImage);
-                }, 2000);
-            };
+            // Limit max bubbles for better performance
+            if (activeBubbles.length > 15) {
+                const oldestBubble = activeBubbles.shift();
+                if (oldestBubble.element && oldestBubble.element.parentNode) {
+                    oldestBubble.element.parentNode.removeChild(oldestBubble.element);
+                }
+            }
             
-            // Don't show anything if photo fails to load
-            img.onerror = () => {
-                console.log(`Failed to load photo: ${randomPhoto}`);
-                // Remove from active bubbles tracking if failed
+            // Remove after animation and clean up tracking
+            setTimeout(() => {
+                if (hoverImage.parentNode) {
+                    hoverImage.parentNode.removeChild(hoverImage);
+                }
+                // Remove from active bubbles tracking
                 activeBubbles = activeBubbles.filter(bubble => bubble.element !== hoverImage);
-            };
-            
-            hoverImage.appendChild(img);
-        });
+            }, 2000);
+        };
+        
+        document.addEventListener('mousemove', handleMouseMove, { passive: true });
         
         // Hide hint after user starts moving mouse
         let hintHidden = false;

@@ -727,17 +727,20 @@ body {
     height: 100%;
     pointer-events: none;
     z-index: 1000;
+    /* Enable hardware acceleration */
+    will-change: contents;
 }
 
 .hover-image {
-    position: absolute;
+    position: fixed;
     width: 80px;
     height: 80px;
     background: linear-gradient(135deg, #e50914, #ff1a1a);
     border-radius: 50%;
     opacity: 0;
     transform: scale(0);
-    transition: all 0.3s ease;
+    /* Simplified transition for better performance */
+    transition: opacity 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -746,6 +749,11 @@ body {
     animation: float-away 2s ease-out forwards;
     border: 3px solid white;
     overflow: hidden;
+    /* Enable hardware acceleration */
+    will-change: transform, opacity;
+    /* Force GPU rendering */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .hover-image img {
